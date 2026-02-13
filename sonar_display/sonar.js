@@ -47,11 +47,22 @@ class SonarDisplay {
         this.setupAudio();
         
         // Device Motion & Geolocation
-        this.currentDepth = 185; // base depth in meters
+        this.currentDepth = 0; // Start at 0 (realistic)
         this.currentBearing = 0; // degrees
         this.currentLatitude = 42 + 35/60 + 24/3600; // Base coordinates
         this.currentLongitude = -(71 + 2/60 + 18/3600);
-        this.currentTemperature = 12; // Celsius
+        this.currentTemperature = 0; // Start at 0
+        this.currentSpeed = 0; // Knots - only updates with real GPS movement
+        
+        // Track GPS for speed calculation
+        this.lastLatitude = this.currentLatitude;
+        this.lastLongitude = this.currentLongitude;
+        this.lastPositionTime = Date.now();
+        
+        // Stats that increase with each ping
+        this.pingCount = 0;
+        this.signalStrength = 0;
+        this.frequencyVariance = 0;
         
         this.setupDeviceMotion();
         this.setupGeolocation();
@@ -154,13 +165,31 @@ class SonarDisplay {
         if ('geolocation' in navigator) {
             navigator.geolocation.watchPosition(
                 (position) => {
-                    // Update coordinates with real GPS data
+                    const now = Date.now();
+                    const timeDelta = (now - this.lastPositionTime) / 1000; // seconds
+                    
+                    // Calculate distance moved (rough haversine)
+                    const dLat = position.coords.latitude - this.lastLatitude;
+                    const dLon = position.coords.longitude - this.lastLongitude;
+                    const distance = Math.sqrt(dLat * dLat + dLon * dLon) * 69; // rough miles conversion
+                    
+                    // Calculate speed in knots (only if actually moved)
+                    if (timeDelta > 0 && distance > 0.001) {
+                        this.currentSpeed = (distance / timeDelta) * 0.868; // convert to knots
+                    } else {
+                        this.currentSpeed = 0; // No movement = 0 knots
+                    }
+                    
+                    // Update coordinates
                     this.currentLatitude = position.coords.latitude;
                     this.currentLongitude = position.coords.longitude;
+                    this.lastLatitude = position.coords.latitude;
+                    this.lastLongitude = position.coords.longitude;
+                    this.lastPositionTime = now;
                 },
                 (error) => {
                     console.warn('Geolocation error:', error.message);
-                    // Fall back to base coordinates
+                    this.currentSpeed = 0; // No GPS = 0 knots
                 },
                 {
                     enableHighAccuracy: true,
@@ -406,6 +435,9 @@ class SonarDisplay {
             this.lastPingTime = now;
             this.pingProgress = 0;
             this.playPingSound();
+            
+            // Update stats with each ping
+            this.updateStats();
         }
         
         // Draw expanding ping ring
@@ -429,6 +461,32 @@ class SonarDisplay {
         }
     }
     
+    updateStats() {
+        // Increment ping count
+        this.pingCount++;
+        
+        // Progressive depth increase (max 185m, ~2m per ping starting early)
+        if (this.currentDepth < 185) {
+            this.currentDepth += (2 + Math.random() * 3); // 2-5m per ping
+        }
+        
+        // Progressive signal strength increase (0-100 with variance)
+        const strengthIncrease = 3 + Math.random() * 4; // 3-7 per ping
+        this.signalStrength = Math.min(100, this.signalStrength + strengthIncrease);
+        // Add random variance (-10 to +10)
+        this.signalStrength = Math.max(0, Math.min(100, 
+            this.signalStrength + (Math.random() * 20 - 10)
+        ));
+        
+        // Progressive frequency variance (increases with noise)
+        const freqVariance = 1 + Math.random() * 2; // 1-3 Hz per ping
+        this.frequencyVariance = Math.min(5, this.frequencyVariance + freqVariance);
+        // Add random variance (-1 to +1)
+        this.frequencyVariance = Math.max(0, Math.min(5,
+            this.frequencyVariance + (Math.random() * 2 - 1)
+        ));
+    }
+    
     updateSweep() {
         this.sweepAngle += this.sweepSpeed;
         if (this.sweepAngle >= 360) {
@@ -443,6 +501,9 @@ class SonarDisplay {
         
         // Update depth from device tilt
         document.getElementById('ownDepth').textContent = Math.floor(this.currentDepth) + ' m';
+        
+        // Update speed from GPS movement (only non-zero if actually moving)
+        document.getElementById('currentSpeed').textContent = this.currentSpeed.toFixed(1) + ' knots';
         
         // Update coordinates from geolocation
         const latDeg = Math.floor(this.currentLatitude);
@@ -460,9 +521,13 @@ class SonarDisplay {
     }
     
     updateFrequency() {
-        // Update frequency display with slight realistic variance
-        const freqVariance = 37.5 + Math.sin(Date.now() / 5000) * 0.3;
-        document.getElementById('frequency').textContent = freqVariance.toFixed(1) + ' kHz';
+        // Update frequency display with variance
+        const baseFreq = 37.5;
+        const freq = baseFreq + this.frequencyVariance;
+        document.getElementById('frequency').textContent = freq.toFixed(2) + ' kHz';
+        
+        // Update signal strength display
+        document.getElementById('signalStrength').textContent = Math.floor(this.signalStrength) + '%';
     }
     
     animate() {
