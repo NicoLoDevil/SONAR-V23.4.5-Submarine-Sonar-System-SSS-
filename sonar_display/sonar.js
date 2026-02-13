@@ -64,8 +64,13 @@ class SonarDisplay {
         this.signalStrength = 0;
         this.frequencyVariance = 0;
         
+        // Audio Device Detection
+        this.speakerStatus = 'OFFLINE';
+        this.micStatus = 'OFFLINE';
+        
         this.setupDeviceMotion();
         this.setupGeolocation();
+        this.checkAudioDevices();
         
         // Start animation loop
         this.animate();
@@ -114,6 +119,55 @@ class SonarDisplay {
             }
         } catch (e) {
             // Silently fail if audio not available
+        }
+    }
+    
+    checkAudioDevices() {
+        // Check for microphone and speakers
+        navigator.mediaDevices.enumerateDevices()
+            .then(devices => {
+                let hasMicrophone = false;
+                let hasSpeaker = false;
+                
+                devices.forEach(device => {
+                    if (device.kind === 'audioinput') {
+                        hasMicrophone = true;
+                    }
+                    if (device.kind === 'audiooutput') {
+                        hasSpeaker = true;
+                    }
+                });
+                
+                // Update status
+                this.speakerStatus = hasSpeaker ? 'ACTIVE' : 'OFFLINE';
+                this.micStatus = hasMicrophone ? 'ACTIVE' : 'OFFLINE';
+                
+                // Update HUD display
+                this.updateDeviceStatus();
+                
+                console.log(`Audio Devices - Speaker: ${this.speakerStatus}, Mic: ${this.micStatus}`);
+            })
+            .catch(err => {
+                console.warn('Could not enumerate audio devices:', err.message);
+                this.speakerStatus = 'UNKNOWN';
+                this.micStatus = 'UNKNOWN';
+                this.updateDeviceStatus();
+            });
+    }
+    
+    updateDeviceStatus() {
+        // Update speaker status in HUD
+        const speakerStatus = document.getElementById('speakerStatus');
+        if (speakerStatus) {
+            speakerStatus.textContent = this.speakerStatus;
+            speakerStatus.className = this.speakerStatus === 'ACTIVE' ? 'status-active' : 'status-warning';
+        }
+        
+        // Update microphone status in HUD
+        const micStatus = document.getElementById('micStatus');
+        if (micStatus) {
+            micStatus.textContent = this.micStatus;
+            micStatus.className = this.micStatus === 'ACTIVE' ? 'status-active' : 'status-warning';
         }
     }
     
