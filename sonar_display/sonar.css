@@ -1,0 +1,260 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #000814;
+}
+
+body {
+    font-family: 'Courier New', monospace;
+    background: radial-gradient(ellipse at center, #001428 0%, #000814 100%);
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: #000814;
+}
+
+/* HUD Container */
+.hud-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 100;
+}
+
+/* HUD Panels */
+.hud-panel {
+    position: absolute;
+    background: rgba(0, 20, 40, 0.75);
+    border: 2px solid #00ff88;
+    padding: 15px 20px;
+    border-radius: 3px;
+    box-shadow: 
+        0 0 20px rgba(0, 255, 136, 0.3),
+        inset 0 0 10px rgba(0, 255, 136, 0.1);
+    font-size: 13px;
+    width: 280px;
+}
+
+.panel-header {
+    color: #00ff88;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+    font-size: 14px;
+}
+
+.status-line {
+    color: #00bb66;
+    margin: 6px 0;
+    display: flex;
+    justify-content: space-between;
+    min-height: 18px;
+}
+
+.status-active {
+    color: #00ff88;
+    font-weight: bold;
+    animation: pulse 2s infinite;
+}
+
+.status-value {
+    color: #00ff88;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(0, 255, 136, 0.5);
+    margin-left: 10px;
+}
+
+.status-warning {
+    color: #ff6b35;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(255, 107, 53, 0.5);
+    margin-left: 10px;
+    animation: warning-pulse 1.5s infinite;
+}
+
+/* Panel Positions */
+.top-left {
+    top: 20px;
+    left: 20px;
+}
+
+.top-right {
+    top: 20px;
+    right: 20px;
+}
+
+.bottom-left {
+    bottom: 20px;
+    left: 20px;
+}
+
+.bottom-right {
+    bottom: 20px;
+    right: 20px;
+}
+
+.center-bottom {
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.right-center {
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 280px;
+}
+
+/* Contacts List */
+.contacts-list {
+    margin-top: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+    font-size: 12px;
+}
+
+.contact-item {
+    color: #00ff88;
+    padding: 4px 0;
+    border-left: 2px solid #00ff88;
+    padding-left: 8px;
+    margin: 3px 0;
+    text-shadow: 0 0 3px rgba(0, 255, 136, 0.5);
+    animation: blip-fade 2s ease-out;
+}
+
+/* Scrollbar Styling */
+.contacts-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.contacts-list::-webkit-scrollbar-track {
+    background: rgba(0, 255, 136, 0.1);
+}
+
+.contacts-list::-webkit-scrollbar-thumb {
+    background: rgba(0, 255, 136, 0.4);
+    border-radius: 3px;
+}
+
+/* Animations */
+@keyframes pulse {
+    0%, 100% {
+        text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
+        opacity: 1;
+    }
+    50% {
+        text-shadow: 0 0 20px rgba(0, 255, 136, 0.8);
+        opacity: 0.8;
+    }
+}
+
+@keyframes blip-fade {
+    0% {
+        opacity: 1;
+        text-shadow: 0 0 10px rgba(0, 255, 136, 0.8);
+    }
+    100% {
+        opacity: 0.5;
+        text-shadow: 0 0 0px rgba(0, 255, 136, 0);
+    }
+}
+
+@keyframes scan-pulse {
+    0% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.3;
+    }
+}
+
+@keyframes warning-pulse {
+    0%, 100% {
+        opacity: 1;
+        text-shadow: 0 0 5px rgba(255, 107, 53, 0.5);
+    }
+    50% {
+        opacity: 0.6;
+        text-shadow: 0 0 10px rgba(255, 107, 53, 0.8);
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .hud-panel {
+        width: 220px;
+        padding: 10px 15px;
+        font-size: 11px;
+    }
+    
+    .panel-header {
+        font-size: 12px;
+        margin-bottom: 8px;
+    }
+    
+    .status-line {
+        margin: 4px 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .hud-panel {
+        width: 180px;
+        padding: 8px 10px;
+        font-size: 10px;
+    }
+    
+    .panel-header {
+        font-size: 11px;
+        margin-bottom: 6px;
+    }
+    
+    .status-line {
+        margin: 3px 0;
+    }
+    
+    .center-bottom {
+        width: 300px;
+    }
+}
+
+/* Prevent text selection */
+.hud-container {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Ensure no visible scrollbars anywhere */
+::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+}
+
+html {
+    scrollbar-width: none;
+}

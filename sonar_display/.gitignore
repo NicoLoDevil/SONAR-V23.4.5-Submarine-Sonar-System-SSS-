@@ -1,0 +1,32 @@
+# Audio Files
+# Add your sonar_ping.mp3 file here - this file is not committed to git
+audio/sonar_ping.mp3
+audio/*.mp3
+audio/*.wav
+audio/*.flac
+
+# System files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Dependencies (if using Node.js)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temp files
+*.tmp
+*.temp
+~*

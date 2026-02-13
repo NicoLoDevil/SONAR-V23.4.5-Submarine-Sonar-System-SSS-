@@ -1,0 +1,9 @@
+numpy
+scipy
+matplotlib
+pyyaml
+scikit-learn
+numba
+sounddevice
+pyaudio
+pytest

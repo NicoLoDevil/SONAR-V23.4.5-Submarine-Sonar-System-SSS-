@@ -1,0 +1,53 @@
+{
+  "name": "sonar-display-system",
+  "version": "1.0.0",
+  "description": "Military-Grade Submarine Sonar Console Simulation - Pure HTML5, CSS3, Canvas API",
+  "main": "index.html",
+  "scripts": {
+    "serve": "python -m http.server 8000",
+    "test-audio": "echo 'Check console while page is open to verify audio configuration'",
+    "build": "echo 'This is a static HTML/CSS/JS project - no build required'",
+    "start": "python -m http.server 8000 && echo 'Open http://localhost:8000 in your browser'"
+  },
+  "keywords": [
+    "sonar",
+    "sonar-display",
+    "submarine",
+    "radar",
+    "canvas",
+    "animation",
+    "military",
+    "visualization",
+    "real-time"
+  ],
+  "author": "Submarine Sonar System Project",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NicoLoDevil/SONAR-V23.4.5-Submarine-Sonar-System-SSS-"
+  },
+  "browser": {
+    "http": false,
+    "https": false
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "files": [
+    "index.html",
+    "sonar.css",
+    "sonar.js",
+    "audio/",
+    "README.md"
+  ],
+  "notes": {
+    "audio-setup": "Place your sonar_ping.mp3 file in the audio/ directory. The system will automatically play it every second.",
+    "browser": "Works in all modern browsers (Chrome, Firefox, Safari, Edge)",
+    "offline": "This app works completely offline - no external dependencies or network calls required",
+    "server": "For local testing, run: python -m http.server 8000",
+    "deployment": "Copy entire sonar_display/ folder to your web server - it's a static site"
+  }
+}

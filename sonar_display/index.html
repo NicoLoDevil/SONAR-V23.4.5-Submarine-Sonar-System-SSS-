@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SONAR System - Military Grade Submarine Sonar Console</title>
+    <link rel="stylesheet" href="sonar.css">
+</head>
+<body>
+    <canvas id="sonarCanvas"></canvas>
+    
+    <!-- HUD Overlays -->
+    <div class="hud-container">
+        <!-- Top Left: System Status -->
+        <div class="hud-panel top-left">
+            <div class="panel-header">SONAR SYSTEM</div>
+            <div class="status-line">STATUS: <span class="status-active">ACTIVE</span></div>
+            <div class="status-line">MODE: <span class="status-value">ACTIVE SEARCH</span></div>
+            <div class="status-line">FREQ: <span class="status-value" id="frequency">37.5 kHz</span></div>
+        </div>
+        
+        <!-- Top Right: Depth & Bearings -->
+        <div class="hud-panel top-right">
+            <div class="panel-header">VESSEL DATA</div>
+            <div class="status-line">OWN DEPTH: <span class="status-value" id="ownDepth">185 m</span></div>
+            <div class="status-line">BEARING: <span class="status-value" id="bearing">000°</span></div>
+            <div class="status-line">SPEED: <span class="status-value">15.4 knots</span></div>
+        </div>
+        
+        <!-- Bottom Left: Range Scale -->
+        <div class="hud-panel bottom-left">
+            <div class="panel-header">RANGE</div>
+            <div class="status-line">SCALE: <span class="status-value" id="rangeScale">10 nm</span></div>
+            <div class="status-line">CONTACTS: <span class="status-value" id="contactCount">0</span></div>
+            <div class="status-line">PING RATE: <span class="status-value">1.0 Hz</span></div>
+        </div>
+        
+        <!-- Bottom Right: Coordinates -->
+        <div class="hud-panel bottom-right">
+            <div class="panel-header">POSITION</div>
+            <div class="status-line">LAT: <span class="status-value" id="latitude">42°35'24"N</span></div>
+            <div class="status-line">LON: <span class="status-value" id="longitude">071°02'18"W</span></div>
+            <div class="status-line">TEMP: <span class="status-value">12°C</span></div>
+        </div>
+        
+        <!-- Center Bottom: Contact List -->
+        <div class="hud-panel center-bottom">
+            <div class="panel-header">CONTACTS</div>
+            <div id="contactsList" class="contacts-list"></div>
+        </div>
+        
+        <!-- Right Center: Missing Misc (Real Sonar Requirements) -->
+        <div class="hud-panel right-center">
+            <div class="panel-header">MISSING MISC</div>
+            <div class="status-line">TRANSDUCER: <span class="status-warning">OFFLINE</span></div>
+            <div class="status-line">SIGNAL PROC: <span class="status-warning">OFFLINE</span></div>
+            <div class="status-line">HVAC SYSTEM: <span class="status-warning">OFFLINE</span></div>
+            <div class="status-line">POWER SUPPLY: <span class="status-warning">OFFLINE</span></div>
+            <div class="status-line">HULL MOUNT: <span class="status-warning">OFFLINE</span></div>
+            <div class="status-line">SONAR OPS: <span class="status-warning">OFFLINE</span></div>
+        </div>
+    </div>
+    
+    <!-- Audio Element -->
+    <audio id="sonarPing" preload="auto"></audio>
+    
+    <script src="sonar.js"></script>
+</body>
+</html>
